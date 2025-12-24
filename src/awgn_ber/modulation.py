@@ -23,6 +23,19 @@ from __future__ import annotations
 import numpy as np
 
 def _validate_bits(bits: np.ndarray) -> np.ndarray:
+    """
+    Args:
+        bits (np.ndarray): 
+            Input of shape (N,).
+
+    Raises:
+        ValueError: bits must be a 1D array of shape (N,)
+        ValueError: bits array must contain only 0s and 1s
+
+    Returns:
+        np.ndarray: 
+            bits of shape (N,), values in {0, 1}.
+    """
     bits = np.asarray(bits)
     if bits.ndim != 1:
         raise ValueError("bits must be a 1D array of shape (N,)")
@@ -108,6 +121,15 @@ def qpsk_modulate(bits: np.ndarray) -> np.ndarray:
 def qpsk_demodulate(symbols: np.ndarray) -> np.ndarray:
     """
     Hard-decision Gray-coded QPSK demodulation.
+    
+    Parameters
+    ----------
+    symbols : np.ndarray
+        QPSK symbols of shape (N/2,), complex128.
+    Returns
+    ------- 
+    np.ndarray
+        Demodulated bits of shape (N,).
     """
     s = np.asarray(symbols, dtype=np.complex128)
     if s.ndim != 1:
