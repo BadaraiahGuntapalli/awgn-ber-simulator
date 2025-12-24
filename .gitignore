@@ -17,3 +17,5 @@ venv/
 # Results (generated)
 results/*.png
 results/*.csv
+
+*.egg-info/
