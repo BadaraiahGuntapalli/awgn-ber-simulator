@@ -182,3 +182,6 @@ def demodulate(symbols: np.ndarray, scheme:str) -> np.ndarray:
         return qpsk_demodulate(symbols)
     
     raise ValueError(f"Unsupported modulation scheme: {scheme}")
+
+
+

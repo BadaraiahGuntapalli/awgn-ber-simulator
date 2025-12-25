@@ -15,8 +15,8 @@ venv/
 .vscode/
 
 # Results (generated)
-results/*.png
-results/*.csv
+#results/*.png
+#results/*.csv
 
 *.egg-info/
 
