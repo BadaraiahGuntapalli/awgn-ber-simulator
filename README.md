@@ -35,3 +35,58 @@ between core modules, experiment scripts, tests, and results.
 
 See **[`docs/project_structure.md`](docs/project_structure.md)** for the
 detailed directory structure and design rationale.
+
+## Reproducing Results (BER vs SNR)
+
+This repository does **not** track generated result files (CSV/PNG) in Git.
+All results are **reproducible** using the provided experiment script.
+
+### Prerequisites
+- Python ≥ 3.9
+- NumPy
+- Matplotlib
+
+Install the project in editable mode from the repository root:
+
+```bash
+pip install -e .
+````
+
+### Run BER vs SNR Experiments
+
+#### BPSK over AWGN
+
+```bash
+python scripts/run_ber_vs_snr.py \
+    --mod bpsk \
+    --snr_db 0 2 4 6 8 10 \
+    --n_bits 200000 \
+    --seed 0
+```
+
+#### QPSK over AWGN
+
+```bash
+python scripts/run_ber_vs_snr.py \
+    --mod qpsk \
+    --snr_db 0 2 4 6 8 10 \
+    --n_bits 200000 \
+    --seed 0
+```
+
+### Outputs
+
+The script generates:
+
+* `results/ber_<mod>.csv` — BER values vs SNR
+* `results/ber_<mod>.png` — BER vs SNR plot (log-scale)
+
+The `results/` directory is intentionally excluded from version control.
+Users are expected to regenerate results locally.
+
+### Notes
+
+* QPSK uses Gray coding and unit symbol energy normalization.
+* The SNR is interpreted as **Es/N0** with **Es = 1**.
+* A fixed random seed ensures reproducibility across runs.
+
