@@ -15,7 +15,11 @@ import matplotlib.pyplot as plt
 
 from awgn_ber.modulation import modulate, demodulate
 from awgn_ber.channel import awgn
-from awgn_ber.metrics import ber
+from awgn_ber.metrics import ber, ber_theory_bpsk_awgn, ber_theory_qpsk_awgn
+
+
+
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="BER vs SNR for BPSK/QPSK over AWGN")
@@ -91,19 +95,31 @@ def main() -> None:
     results_dir.mkdir(parents=True, exist_ok=True)
     
     csv_path = results_dir / f"ber_{args.mod}.csv"
-    data = np.column_stack([np.array(snr_db_list, dtype=float), np.array(ber_list, dtype=float)])
+    data = np.column_stack([np.round(np.array(snr_db_list, dtype=float), 2), np.round(np.array(ber_list, dtype=float), 2)])
     header="snr_db,ber"
     np.savetxt(csv_path, data, delimiter=",", header=header, comments="")
     print(f"saved {csv_path}")
+
+
+    # calculating the theorictal ber for bpsk and qpsk 
+    snr_arr = np.array(snr_db_list, dtype=float )
+
+    if args.mod == "bpsk":
+        ber_th = ber_theory_bpsk_awgn(snr_arr, snr_def="EbN0")
+    else:
+        ber_th = ber_theory_qpsk_awgn(snr_arr, snr_def="EsN0")
     
     # plot (semilogy is standard for BER curves)
     plt.figure()
-    plt.semilogy(snr_db_list, ber_list, marker='*', linestyle='--', linewidth=1.5)
+    plt.semilogy(snr_db_list, ber_list, marker='*', label='Simulated BER')
+    plt.semilogy(snr_db_list, ber_th, linestyle='--', linewidth=1.5, label='Theoritical BER')
     plt.xlabel("SNR (dB)")
     plt.ylabel("BER")
-    plt.title(f"BER vs SNR over AWGN")
+    plt.title(f"BER vs SNR over AWGN ({args.mod.upper()})")
     plt.grid(True, which="both")
+    plt.legend()
     
+
     
     fig_path = results_dir / f"ber_{args.mod}.png"
     plt.savefig(fig_path, dpi=300, bbox_inches="tight")
