@@ -7,7 +7,7 @@ Python simulation of digital baseband transmission over an Additive White Gaussi
 - Modulates bits using **BPSK** or **QPSK**
 - Passes symbols through an **AWGN** channel
 - Demodulates and estimates **Bit Error Rate (BER)**
-- Plots **BER vs SNR (dB)** and saves results
+- Plots **simulated and theoretical BER vs SNR (dB)** and saves results
 
 ## Why it matters
 This is a foundational wireless-communications simulation that demonstrates:
@@ -79,7 +79,7 @@ python scripts/run_ber_vs_snr.py \
 The script generates:
 
 * `results/ber_<mod>.csv` — BER values vs SNR
-* `results/ber_<mod>.png` — BER vs SNR plot (log-scale)
+* `results/ber_<mod>.png` — BER vs SNR plot with simulated and theoretical curves (log-scale)
 
 The `results/` directory is intentionally excluded from version control.
 Users are expected to regenerate results locally.
@@ -89,4 +89,42 @@ Users are expected to regenerate results locally.
 * QPSK uses Gray coding and unit symbol energy normalization.
 * The SNR is interpreted as **Es/N0** with **Es = 1**.
 * A fixed random seed ensures reproducibility across runs.
+* Theoretical BER curves are overlaid to validate simulation correctness.
+
+
+## Theoretical BER (AWGN)
+
+This repository includes closed-form theoretical BER expressions for comparison
+with Monte-Carlo simulations.
+
+### BPSK over AWGN
+
+For coherent BPSK with unit symbol energy (Es = 1):
+
+BER_BPSK = 0.5 * erfc( sqrt(Es / N0) )
+
+Since BPSK carries one bit per symbol, Es = Eb.
+
+---
+
+### QPSK over AWGN (Gray coded)
+
+For Gray-coded QPSK:
+
+BER_QPSK = 0.5 * erfc( sqrt(Eb / N0) )
+
+With two bits per symbol: Eb = Es / 2. Therefore, expressed versus Es/N0:
+
+BER_QPSK = 0.5 * erfc( sqrt(Es / (2 * N0)) )
+
+---
+
+
+
+### Notes
+
+* The simulation and theory both assume **Es/N0** as the SNR definition.
+* QPSK theoretical BER is derived under **Gray coding**.
+* Simulated BER curves converge to the theoretical results as the number of bits increases.
+
 
